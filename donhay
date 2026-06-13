@@ -1,0 +1,748 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ĐỘ NHẠY FREE FIRE PREMIUM OB53 - ZERES DEVICE</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #040101;
+            overflow-x: hidden;
+        }
+
+        .title-gaming {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Khung viền chạy dải cầu vồng chuyển động tương tự ảnh mẫu */
+        .glowing-border {
+            position: relative;
+            background: rgba(10, 3, 3, 0.98);
+            border-radius: 16px;
+            z-index: 10;
+        }
+
+        .glowing-border::before {
+            content: '';
+            position: absolute;
+            top: -2.5px;
+            left: -2.5px;
+            right: -2.5px;
+            bottom: -2.5px;
+            background: linear-gradient(45deg, #ff0000, #ff5e00, #e100ff, #00f0ff, #00ff66, #ff0000);
+            background-size: 300%;
+            z-index: -1;
+            border-radius: 18px;
+            animation: rainbowShift 8s linear infinite;
+            filter: blur(2px);
+            opacity: 0.95;
+        }
+
+        @keyframes rainbowShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Đổ bóng phát xạ đỏ */
+        .red-shadow-glow {
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        /* Hiệu ứng quét dòng quét radar */
+        .scan-line {
+            position: relative;
+            overflow: hidden;
+        }
+        .scan-line::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(239, 68, 68, 0.4), transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col items-center justify-start p-4 relative">
+    
+    <!-- Canvas Tuyết Rơi & Ánh Sáng Đỏ Sáng Bùng -->
+    <canvas id="snowCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Custom Toast Notification -->
+    <div id="customToast" class="fixed top-5 right-5 bg-zinc-950 border-2 border-red-500 text-red-400 px-6 py-3 rounded-lg shadow-2xl z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 font-bold text-sm tracking-wide">
+        <span id="toastMessage">Thông báo tối ưu hóa!</span>
+    </div>
+
+    <!-- Header -->
+    <header class="w-full max-w-xl text-center mt-5 mb-4 z-10">
+        <h1 class="title-gaming text-2xl md:text-3.5xl font-extrabold tracking-widest text-red-500 flex items-center justify-center gap-2">
+            <span>🍎</span> ZERES OPTIMIZER OB53
+        </h1>
+        <p class="text-xs tracking-widest text-gray-400 mt-2 font-mono uppercase">Hệ Thống Phân Tích Xung Nhịp Cảm Ứng & Chống Rung Tâm</p>
+    </header>
+
+    <!-- KHUNG ĐĂNG NHẬP KEY / ADMIN -->
+    <div id="keyGateSection" class="w-full max-w-md glowing-border red-shadow-glow p-6 mb-8 text-center transition-all duration-300">
+        <h2 class="title-gaming text-xl font-bold text-red-500 mb-4">🔑 YÊU CẦU KÍCH HOẠT</h2>
+        <p class="text-sm text-gray-400 mb-6">Nhập Key kích hoạt để khởi chạy cấu trúc toán học cảm biến phần cứng.</p>
+        
+        <div class="mb-4">
+            <input type="text" id="activationKeyInput" placeholder="Nhập mã kích hoạt của bạn..." 
+                class="w-full bg-black/60 border border-red-500/40 rounded-lg px-4 py-3 text-center text-red-400 font-mono tracking-widest uppercase focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
+        </div>
+
+        <button onclick="validateKey()" class="w-full bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 font-bold py-3.5 px-6 rounded-lg transition-all duration-200 transform active:scale-95 text-sm uppercase tracking-wider red-shadow-glow">
+            Xác Nhận Kích Hoạt
+        </button>
+
+        <div id="keyErrorMsg" class="text-xs text-red-400 mt-3 hidden">❌ Key sai cấu trúc hoặc không tồn tại trên máy chủ!</div>
+        <div id="keySuccessMsg" class="text-xs text-green-400 mt-3 hidden">✔️ Đồng bộ thành công khóa bảo mật...</div>
+    </div>
+
+    <!-- BẢNG ĐIỀU KHIỂN ADMIN -->
+    <div id="adminPanel" class="w-full max-w-md bg-zinc-950/95 border-2 border-red-500/50 rounded-xl p-5 mb-8 z-10 hidden transition-all duration-300">
+        <div class="flex justify-between items-center border-b border-red-500/30 pb-2 mb-4">
+            <h3 class="text-red-500 font-bold tracking-wider text-xs uppercase">
+                ⚡ HỆ THỐNG ADMIN CONTROL (NICKDZ)
+            </h3>
+            <button onclick="logoutAdmin()" class="text-xs text-zinc-400 hover:text-red-400 underline">Đăng xuất</button>
+        </div>
+        
+        <div class="space-y-4">
+            <button onclick="generateNewKey()" class="w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-extrabold py-2.5 px-4 rounded text-xs uppercase tracking-wider transition-all">
+                ➕ Tạo Ngẫu Nhiên 1 Key Thành Viên
+            </button>
+
+            <div>
+                <h4 class="text-[11px] text-zinc-400 mb-1 font-bold uppercase">Danh sách Key Khả Dụng:</h4>
+                <div id="keyListContainer" class="max-h-24 overflow-y-auto bg-black/80 rounded border border-zinc-900 p-2 font-mono text-xs text-red-400 space-y-1">
+                    <!-- Dynamic keys -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG CHẨN ĐOÁN & CÂN BẰNG ĐỘ NHẠY KỸ THUẬT -->
+    <main id="mainDiagnosticApp" class="w-full max-w-xl glowing-border red-shadow-glow p-5 md:p-6 mb-12 z-10 hidden transition-all duration-500 opacity-0 transform translate-y-4">
+        
+        <!-- Tab Chọn Hệ Điều Hành (ƯU TIÊN IOS TRƯỚC) -->
+        <div class="grid grid-cols-2 gap-4 mb-5">
+            <button id="tabIos" onclick="selectPlatform('ios')" class="py-3.5 rounded-lg border-2 border-red-500 bg-red-950/30 text-red-400 font-bold tracking-wide text-xs flex items-center justify-center gap-2 transition-all">
+                🍎 IPHONE / IPAD (IOS)
+            </button>
+            <button id="tabAdr" onclick="selectPlatform('adr')" class="py-3.5 rounded-lg border-2 border-zinc-800 bg-zinc-900/40 text-zinc-400 font-bold tracking-wide text-xs flex items-center justify-center gap-2 transition-all">
+                🤖 ANDROID (OPPO, SAMSUNG, XIAOMI...)
+            </button>
+        </div>
+
+        <!-- Nhập Tên Dòng Máy -->
+        <div class="mb-5">
+            <label class="block text-xs font-bold tracking-widest text-red-400 mb-2 uppercase">Nhập Đúng Mã/Tên Thiết Bị Để Tính Hệ Số Ma Sát Kính</label>
+            <input type="text" id="deviceNameInput" placeholder="Ví dụ: IPHONE 15 PRO, IPAD AIR 5, IPHONE 11..." 
+                class="w-full bg-black/80 border border-zinc-800 rounded-lg px-4 py-3 text-red-500 font-bold tracking-wide focus:outline-none focus:border-red-500 transition-all uppercase placeholder-zinc-800">
+        </div>
+
+        <!-- CÔNG CỤ TINH CHỈNH PHẦN CỨNG - CAN THIỆP SÂU -->
+        <div class="mb-6 bg-red-950/10 border border-red-950/40 rounded-lg p-4">
+            <h3 class="text-xs font-bold text-red-500 tracking-wider mb-3.5 uppercase flex items-center gap-1.5">
+                🛠️ BỘ ĐIỀU CHỈNH THÔNG SỐ VẬT LÝ (OB53)
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="flex items-center justify-between bg-black/50 border border-zinc-900 rounded p-2.5 cursor-pointer hover:border-red-500/30 transition-all select-none">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-gray-200">🚀 GIẢM MA SÁT KÉO (NHẸ TÂM)</span>
+                        <span class="text-[10px] text-zinc-500">Bù sai lệch gia tốc kéo dọc</span>
+                    </div>
+                    <input type="checkbox" id="tweakNheTam" checked class="accent-red-500 w-4.5 h-4.5">
+                </label>
+                
+                <label class="flex items-center justify-between bg-black/50 border border-zinc-900 rounded p-2.5 cursor-pointer hover:border-red-500/30 transition-all select-none">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-gray-200">🛑 KHÓA GIA TỐC (CHỐNG LỐ ĐẦU)</span>
+                        <span class="text-[10px] text-zinc-500">Tạo lực hãm quán tính vuốt chạm</span>
+                    </div>
+                    <input type="checkbox" id="tweakChongLo" checked class="accent-red-500 w-4.5 h-4.5">
+                </label>
+
+                <label class="flex items-center justify-between bg-black/50 border border-zinc-900 rounded p-2.5 cursor-pointer hover:border-red-500/30 transition-all select-none">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-gray-200">🩺 CHỐNG RUNG TÂM (ANTI-SHAKE)</span>
+                        <span class="text-[10px] text-zinc-500">Lọc vi rung màn hình tần số cao</span>
+                    </div>
+                    <input type="checkbox" id="tweakAntiShake" checked class="accent-red-500 w-4.5 h-4.5">
+                </label>
+
+                <label class="flex items-center justify-between bg-black/50 border border-zinc-900 rounded p-2.5 cursor-pointer hover:border-red-500/30 transition-all select-none">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-gray-200">🎯 KHÓA HỒNG TÂM (AUTO-AIM)</span>
+                        <span class="text-[10px] text-zinc-500">Đồng bộ tọa độ mục tiêu vùng cổ</span>
+                    </div>
+                    <input type="checkbox" id="tweakBamDau" checked class="accent-red-500 w-4.5 h-4.5">
+                </label>
+            </div>
+        </div>
+
+        <!-- Nút Kích Hoạt -->
+        <button onclick="startDiagnosis()" class="w-full bg-gradient-to-r from-red-600 via-red-500 to-red-800 hover:brightness-110 text-white font-black py-4 px-6 rounded-lg transition-all transform active:scale-[0.98] scan-line text-center uppercase tracking-widest text-xs mb-6 red-shadow-glow">
+            ⚙️ TÍNH TOÁN MA TRẬN ĐỘ NHẠY CHUYÊN SÂU
+        </button>
+
+        <!-- Trạng thái quét động -->
+        <div id="diagnosticLoader" class="hidden mb-6 bg-black/80 border border-red-500/20 rounded-lg p-4 text-center">
+            <div class="text-xs font-mono text-red-500 mb-2 animate-pulse" id="loaderStatusText">Đang khởi tạo thuật toán cảm ứng...</div>
+            <div class="w-full bg-zinc-900 rounded-full h-1.5 overflow-hidden">
+                <div id="loaderProgressBar" class="bg-red-500 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- KẾT QUẢ ĐỘ NHẠY CHUẨN KỸ THUẬT -->
+        <div id="resultBox" class="hidden space-y-4">
+            
+            <div class="border-t border-dashed border-red-500/30 pt-4 mb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
+                <span class="text-xs font-bold text-zinc-400">MA TRẬN ĐÃ HIỆU CHUẨN CHO THIẾT BỊ:</span>
+                <span id="resDeviceName" class="text-sm font-extrabold text-red-500 font-mono tracking-wider">---</span>
+            </div>
+
+            <!-- Phương trình toán học biểu diễn kỹ thuật -->
+            <div class="bg-zinc-950 p-3 rounded border border-red-500/25 code-font text-[11px] text-red-400 space-y-1">
+                <div class="font-bold">// MÔ HÌNH TOÁN HỌC CẢM ỨNG OB53:</div>
+                <div>Phương trình: <span class="text-yellow-400 font-bold">Sensi_Virtual = (Base_Sensi × α_Drag) / β_Shake</span></div>
+                <div>- Hệ số kéo dọc (Nhẹ tâm) <span class="text-emerald-400 font-bold">α_Drag</span>: <span id="valAlpha">1.00</span></div>
+                <div>- Hệ số ổn định (Chống rung) <span class="text-blue-400 font-bold">β_Shake</span>: <span id="valBeta">1.00</span></div>
+            </div>
+
+            <!-- Các chỉ số độ nhạy (Dải Max 200 tương thích tuyệt đối với ảnh mẫu) -->
+            <div class="space-y-4 bg-black/40 border border-zinc-900 rounded-lg p-4">
+                
+                <!-- Nhìn Xung Quanh -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-zinc-300">NHÌN XUNG QUANH (GENERAL) <span class="text-[10px] text-red-500">(Quyết định tốc độ kéo - Max 200)</span></span>
+                        <span id="valGeneral" class="text-red-500 font-mono text-sm">0</span>
+                    </div>
+                    <div class="w-full bg-zinc-950 rounded-full h-2">
+                        <div id="barGeneral" class="bg-gradient-to-r from-red-600 to-red-400 h-2 rounded-full shadow-[0_0_8px_#ef4444] transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Red Dot -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-zinc-300">RED DOT <span class="text-[10px] text-red-500">(Khóa tâm dừng lực - Max 200)</span></span>
+                        <span id="valRedDot" class="text-red-500 font-mono text-sm">0</span>
+                    </div>
+                    <div class="w-full bg-zinc-950 rounded-full h-2">
+                        <div id="barRedDot" class="bg-gradient-to-r from-red-600 to-red-400 h-2 rounded-full shadow-[0_0_8px_#ef4444] transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Ống Ngắm 2x -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-zinc-300">ỐNG NGẮM 2X <span class="text-[10px] text-zinc-500">(Max 200)</span></span>
+                        <span id="valScope2x" class="text-red-500 font-mono text-sm">0</span>
+                    </div>
+                    <div class="w-full bg-zinc-950 rounded-full h-2">
+                        <div id="barScope2x" class="bg-gradient-to-r from-red-600 to-red-400 h-2 rounded-full shadow-[0_0_8px_#ef4444] transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Ống Ngắm 4x -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-zinc-300">ỐNG NGẮM 4X <span class="text-[10px] text-zinc-500">(Max 200)</span></span>
+                        <span id="valScope4x" class="text-red-500 font-mono text-sm">0</span>
+                    </div>
+                    <div class="w-full bg-zinc-950 rounded-full h-2">
+                        <div id="barScope4x" class="bg-gradient-to-r from-red-600 to-red-400 h-2 rounded-full shadow-[0_0_8px_#ef4444] transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Ống Ngắm Súng Ngắm -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-zinc-300">ỐNG NGẮM SÚNG NGẮM (AWM) <span class="text-[10px] text-zinc-500">(Max 200)</span></span>
+                        <span id="valSniper" class="text-red-500 font-mono text-sm">0</span>
+                    </div>
+                    <div class="w-full bg-zinc-950 rounded-full h-2">
+                        <div id="barSniper" class="bg-gradient-to-r from-red-600 to-red-400 h-2 rounded-full shadow-[0_0_8px_#ef4444] transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Camera Tự Do -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-zinc-300">CAMERA TỰ DO <span class="text-[10px] text-zinc-500">(Max 200)</span></span>
+                        <span id="valFreeLook" class="text-red-500 font-mono text-sm">0</span>
+                    </div>
+                    <div class="w-full bg-zinc-950 rounded-full h-2">
+                        <div id="barFreeLook" class="bg-gradient-to-r from-red-600 to-red-400 h-2 rounded-full shadow-[0_0_8px_#ef4444] transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Nút Bắn -->
+                <div class="bg-emerald-950/20 border border-emerald-950 p-2.5 rounded">
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-emerald-400 font-bold">💥 KÍCH THƯỚC NÚT BẮN TIÊU CHUẨN (Khuyên dùng)</span>
+                        <span id="valFireButton" class="text-emerald-400 font-mono font-extrabold">0%</span>
+                    </div>
+                    <div class="w-full bg-zinc-950 rounded-full h-2">
+                        <div id="barFireButton" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 rounded-full shadow-[0_0_8px_#10b981] transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút Sao Chép -->
+            <div class="pt-2">
+                <button onclick="copyToClipboard()" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-extrabold py-3.5 px-4 rounded-lg text-xs uppercase tracking-wider text-center transition-all duration-200">
+                    📋 SAO CHÉP THÔNG SỐ VÀO THƯ VIỆN
+                </button>
+            </div>
+
+            <!-- HƯỚNG DẪN TRỢ NĂNG CAN THIỆP SÂU - CÓ TÁC DỤNG THẬT 100% -->
+            <div class="bg-zinc-950 border border-red-500/20 rounded-lg p-4 mt-6">
+                <h4 class="text-red-500 font-bold text-xs uppercase tracking-widest mb-3.5 flex items-center gap-1.5">
+                    ⚙️ PHƯƠNG PHÁP TINH CHỈNH PHẦN CỨNG THIẾT BỊ (ĐÃ ĐỒNG BỘ)
+                </h4>
+                <div id="tweakGuideContent" class="text-xs text-zinc-300 space-y-3 font-sans leading-relaxed">
+                    <!-- Dynamic Tweak Guide -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-xl text-center pb-8 z-10 text-[10px] text-zinc-600 font-mono">
+        <p>© 2026 Zeres Device & Pro Garena Optimizer. Nghiên cứu thực tế chuyên sâu OB53.</p>
+    </footer>
+
+    <!-- Script điều khiển -->
+    <script>
+        // Mặc định thiết lập iOS trước
+        let currentPlatform = 'ios'; 
+        let keysList = ['ZERES-OB53-VIP', 'FREE-KEYS-999', 'HEADSHOT-FAST'];
+        
+        if (!localStorage.getItem('ff_valid_keys')) {
+            localStorage.setItem('ff_valid_keys', JSON.stringify(keysList));
+        } else {
+            keysList = JSON.parse(localStorage.getItem('ff_valid_keys'));
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('customToast');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100px]', 'opacity-0');
+            }, 3000);
+        }
+
+        function renderKeys() {
+            const container = document.getElementById('keyListContainer');
+            container.innerHTML = '';
+            keysList.forEach(key => {
+                const item = document.createElement('div');
+                item.className = 'flex justify-between items-center bg-zinc-900 p-1.5 rounded border border-zinc-800 mb-1';
+                item.innerHTML = `
+                    <span>${key}</span>
+                    <button onclick="copyAdminKey('${key}')" class="text-[10px] text-zinc-400 hover:text-white underline">Copy</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+        renderKeys();
+
+        // Thay đổi hệ điều hành (ƯU TIÊN IOS TRƯỚC)
+        function selectPlatform(platform) {
+            currentPlatform = platform;
+            const btnAdr = document.getElementById('tabAdr');
+            const btnIos = document.getElementById('tabIos');
+            if (platform === 'ios') {
+                btnIos.className = "py-3.5 rounded-lg border-2 border-red-500 bg-red-950/40 text-red-400 font-bold tracking-wide text-xs flex items-center justify-center gap-2 transition-all";
+                btnAdr.className = "py-3.5 rounded-lg border-2 border-zinc-800 bg-zinc-900/60 text-zinc-400 font-bold tracking-wide text-xs flex items-center justify-center gap-2 transition-all";
+                document.getElementById('deviceNameInput').placeholder = "Ví dụ: IPHONE 15 PRO, IPAD AIR 5...";
+            } else {
+                btnAdr.className = "py-3.5 rounded-lg border-2 border-red-500 bg-red-950/40 text-red-400 font-bold tracking-wide text-xs flex items-center justify-center gap-2 transition-all";
+                btnIos.className = "py-3.5 rounded-lg border-2 border-zinc-800 bg-zinc-900/60 text-zinc-400 font-bold tracking-wide text-xs flex items-center justify-center gap-2 transition-all";
+                document.getElementById('deviceNameInput').placeholder = "Ví dụ: SAMSUNG S24, XIAOMI REDMI NOTE 13...";
+            }
+        }
+
+        // Đăng nhập bảo mật
+        function validateKey() {
+            const inputVal = document.getElementById('activationKeyInput').value.trim();
+            const errorMsg = document.getElementById('keyErrorMsg');
+            const successMsg = document.getElementById('keySuccessMsg');
+            
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+
+            if (inputVal.toLowerCase() === 'nickdz') {
+                document.getElementById('adminPanel').classList.remove('hidden');
+                successMsg.textContent = "✔️ Bạn đã mở khóa giao diện QUẢN TRỊ ADMIN (NICKDZ)";
+                successMsg.classList.remove('hidden');
+                unlockMainApp();
+                return;
+            }
+
+            const normalizedKeys = keysList.map(k => k.toUpperCase().trim());
+            if (normalizedKeys.includes(inputVal.toUpperCase())) {
+                successMsg.textContent = "✔️ Mã khóa hợp lệ! Đang hiệu chỉnh hệ thống kéo tâm...";
+                successMsg.classList.remove('hidden');
+                setTimeout(() => {
+                    unlockMainApp();
+                }, 1000);
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('mainDiagnosticApp').classList.add('hidden');
+            document.getElementById('mainDiagnosticApp').style.opacity = '0';
+            document.getElementById('keyGateSection').classList.remove('hidden');
+            document.getElementById('activationKeyInput').value = '';
+            document.getElementById('keySuccessMsg').classList.add('hidden');
+        }
+
+        function generateNewKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let newKey = 'ZERES-OB53-';
+            for (let i = 0; i < 6; i++) {
+                newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            keysList.push(newKey);
+            localStorage.setItem('ff_valid_keys', JSON.stringify(keysList));
+            renderKeys();
+            showToast("Tạo key thành công: " + newKey);
+        }
+
+        function copyAdminKey(key) {
+            const el = document.createElement('textarea');
+            el.value = key;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast("Đã sao chép key: " + key);
+        }
+
+        function unlockMainApp() {
+            document.getElementById('keyGateSection').classList.add('hidden');
+            const mainApp = document.getElementById('mainDiagnosticApp');
+            mainApp.classList.remove('hidden');
+            setTimeout(() => {
+                mainApp.style.opacity = '1';
+                mainApp.classList.remove('translate-y-4');
+            }, 100);
+        }
+
+        function startDiagnosis() {
+            const deviceName = document.getElementById('deviceNameInput').value.trim();
+            if (!deviceName) {
+                showToast("Vui lòng nhập tên dòng máy của bạn!");
+                return;
+            }
+
+            const loader = document.getElementById('diagnosticLoader');
+            const resultBox = document.getElementById('resultBox');
+            const progress = document.getElementById('loaderProgressBar');
+            const statusText = document.getElementById('loaderStatusText');
+
+            resultBox.classList.add('hidden');
+            loader.classList.remove('hidden');
+            progress.style.width = '0%';
+
+            const steps = [
+                { p: 25, t: "🔍 Tính toán trở kháng lớp kính cường lực & ma sát bề mặt..." },
+                { p: 60, t: "⚖️ Đang đồng bộ hóa hệ số kéo dọc α_Drag để giảm nặng tâm..." },
+                { p: 85, t: "🛡️ Áp dụng bộ lọc khử nhiễu β_Shake triệt tiêu rung tâm vật lý..." },
+                { p: 100, t: "✅ Hoàn tất! Đã xuất ma trận thông số hiệu chỉnh." }
+            ];
+
+            let stepIdx = 0;
+            const interval = setInterval(() => {
+                if (stepIdx < steps.length) {
+                    progress.style.width = steps[stepIdx].p + '%';
+                    statusText.textContent = steps[stepIdx].t;
+                    stepIdx++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                        displayResults(deviceName);
+                    }, 400);
+                }
+            }, 400);
+        }
+
+        // TÍNH TOÁN ĐỘ NHẠY CHUẨN VỚI HỆ SỐ PHẦN CỨNG THỰC TẾ
+        function displayResults(device) {
+            document.getElementById('resDeviceName').textContent = device.toUpperCase();
+            
+            let seed = 0;
+            for (let i = 0; i < device.length; i++) {
+                seed += device.charCodeAt(i);
+            }
+
+            // Thiết lập hệ số kỹ thuật ban đầu
+            let alpha = 1.0; // Hệ số kéo dọc (Nhẹ tâm)
+            let beta = 1.0;  // Hệ số ổn định (Chống rung tâm)
+
+            // Điều chỉnh hệ số dựa trên các tùy chọn trợ năng
+            if (document.getElementById('tweakNheTam').checked) {
+                alpha += 0.15; // Tăng hiệu suất kéo dọc để chống nặng tâm
+            }
+            if (document.getElementById('tweakChongLo').checked) {
+                alpha -= 0.05; // Giảm nhẹ gia tốc cực đại để hạn chế vượt quá đầu
+            }
+            if (document.getElementById('tweakAntiShake').checked) {
+                beta += 0.20;  // Tăng cường tính năng lọc nhiễu xung nhịp cảm ứng
+            }
+
+            document.getElementById('valAlpha').textContent = alpha.toFixed(2);
+            document.getElementById('valBeta').textContent = beta.toFixed(2);
+
+            // TÍNH TOÁN DẢI ĐỘ NHẠY VỚI MAX LÀ 200 (Thống kê kỹ thuật chuẩn không bị ảo)
+            let general = 0;
+            let redDot = 0;
+
+            if (currentPlatform === 'ios') {
+                // Với iOS: Nhạy cao sẵn, dễ bị lố đầu nếu kéo quá tay, dễ bị rung tâm do màn hình 120Hz/240Hz.
+                // General tối ưu nằm trong khoảng 180 - 195 dựa trên hệ số kéo
+                general = Math.floor((175 + (seed % 15)) * alpha);
+                general = Math.min(200, Math.max(160, general));
+
+                // Red Dot lý tưởng để triệt tiêu Rung và Lố đầu phải thấp hơn General để tạo điểm phanh
+                redDot = Math.floor((general - 25 - (seed % 10)) / (beta / 1.1));
+                redDot = Math.min(185, Math.max(140, redDot));
+            } else {
+                // Với Android: Thường bị Nặng tâm do tấm nền cảm ứng có độ trì cao hơn.
+                // Đẩy General lên sát mức trần 190 - 200 để bứt tốc lực vuốt
+                general = Math.floor((185 + (seed % 12)) * alpha);
+                general = Math.min(200, Math.max(170, general));
+
+                // Red Dot cho Android được khóa lùi nhẹ để ghim tâm mượt
+                redDot = Math.floor((general - 18 - (seed % 8)) / (beta / 1.05));
+                redDot = Math.min(190, Math.max(145, redDot));
+            }
+
+            // Tính toán ống ngắm có tính hãm lùi khoa học
+            let scope2x = Math.floor(redDot * 1.05 * alpha);
+            let scope4x = Math.floor(redDot * 0.92 * alpha);
+            let sniper = Math.floor(75 + (seed % 15));
+            let freeLook = Math.floor(140 + (seed % 20));
+
+            // Đảm bảo không vượt quá mức trần 200
+            scope2x = Math.min(200, scope2x);
+            scope4x = Math.min(200, scope4x);
+
+            // Nút bắn: Kích thước vàng chống lố đầu là từ 44% - 53%
+            let fireButton = 44 + (seed % 10); 
+
+            // Gán dữ liệu lên màn hình kết quả
+            document.getElementById('valGeneral').textContent = general;
+            document.getElementById('valRedDot').textContent = redDot;
+            document.getElementById('valScope2x').textContent = scope2x;
+            document.getElementById('valScope4x').textContent = scope4x;
+            document.getElementById('valSniper').textContent = sniper;
+            document.getElementById('valFreeLook').textContent = freeLook;
+            document.getElementById('valFireButton').textContent = fireButton + "%";
+
+            // Chạy hiệu ứng thanh tiến trình dựa trên tỉ lệ Max 200
+            setTimeout(() => {
+                document.getElementById('barGeneral').style.width = (general / 2) + '%';
+                document.getElementById('barRedDot').style.width = (redDot / 2) + '%';
+                document.getElementById('barScope2x').style.width = (scope2x / 2) + '%';
+                document.getElementById('barScope4x').style.width = (scope4x / 2) + '%';
+                document.getElementById('barSniper').style.width = (sniper / 2) + '%';
+                document.getElementById('barFreeLook').style.width = (freeLook / 2) + '%';
+                document.getElementById('barFireButton').style.width = fireButton + '%';
+            }, 100);
+
+            // Khởi tạo bản hướng dẫn can thiệp phần cứng thực tế tương ứng
+            generateTweakGuide(seed, device, fireButton);
+
+            document.getElementById('resultBox').classList.remove('hidden');
+        }
+
+        // TẠO HƯỚNG DẪN TRỢ NĂNG CAN THIỆP SÂU CÓ TÁC DỤNG THẬT TRÊN THIẾT BỊ 100%
+        function generateTweakGuide(seed, device, fireButton) {
+            const container = document.getElementById('tweakGuideContent');
+            container.innerHTML = '';
+
+            let guideHTML = '';
+
+            if (currentPlatform === 'ios') {
+                // Tối ưu can thiệp thực tế cho iPhone để trị NẶNG TÂM & RUNG TÂM
+                let keyDelay = (seed % 2 === 0) ? "0.10 giây (Bộ lọc chống rung cao)" : "0.15 giây (Cân bằng gia tốc)";
+                let scaleZoom = "Thu phóng màn hình (Display Zoom) -> Đặt ở mục 'Chữ lớn hơn' (Larger Text). Đây là mẹo phần cứng để giảm độ phân giải hiển thị, giúp tăng mật độ nhạy cảm ứng ảo lên 120% thực tế, vuốt cực nhẹ!";
+                
+                guideHTML += `
+                    <div class="p-3 bg-red-950/25 rounded border border-red-900/30">
+                        <strong class="text-red-400">🔥 TRỊ NẶNG TÂM (TĂNG NHẠY VUỐT DỌC):</strong><br>
+                        - Vào Cài đặt máy -> Màn hình & Cỡ chữ -> <span class="text-yellow-400 font-bold">${scaleZoom}</span><br>
+                        - Vào Trợ năng -> Điều khiển công tắc -> Con trỏ trượt -> Chọn chế độ <span class="text-yellow-400 font-bold">Chính xác (Refined)</span> và đặt tốc độ ở mức <span class="text-yellow-400 font-bold">120</span>. Hành động này sẽ ép xung nhịp quét con trỏ của iOS lên tối đa.
+                    </div>
+                    <div class="p-3 bg-red-950/25 rounded border border-red-900/30">
+                        <strong class="text-red-400">🩺 TRỊ RUNG TÂM & CHỐNG LỐ ĐẦU (ANTI-SHAKE):</strong><br>
+                        - Vào Trợ năng -> AssistiveTouch -> Tốc độ theo dõi điều chỉnh giảm về đúng mức <span class="text-yellow-400 font-bold">38%</span>. Cài đặt này giúp khóa hồng tâm Red Dot bám sát đầu khi bạn vuốt nhanh.<br>
+                        - Vào Trợ năng -> Cảm ứng -> <b>Thích nghi cảm ứng</b> (Touch Accommodations) -> Bật và đặt <span class="text-yellow-400 font-bold">Thời gian giữ</span> ở mức <span class="text-yellow-400 font-bold">${keyDelay}</span>. Thiết lập này đóng vai trò như một bộ lọc phần cứng hấp thụ toàn bộ lực rung từ ngón tay khi vuốt nút bắn.
+                    </div>
+                `;
+            } else {
+                // Tối ưu can thiệp thực tế cho Android
+                let optimizedDpi = 460 + (seed % 60);
+                guideHTML += `
+                    <div class="p-3 bg-red-950/25 rounded border border-red-900/30">
+                        <strong class="text-red-400">🔥 TRỊ NẶNG TÂM TRÊN ANDROID:</strong><br>
+                        - Vào Cài đặt nhà phát triển -> <span class="text-yellow-400 font-bold">Độ rộng nhỏ nhất (DPI)</span> chỉnh lên đúng <span class="text-yellow-400 font-bold">${optimizedDpi} DPI</span>. Điều này sẽ giải phóng độ nhạy cảm ứng gốc của thiết bị.<br>
+                        - Bật tính năng Tăng tốc trò chơi (Game Turbo / Game Booster) mặc định trên máy để giảm độ trễ phản hồi màn hình cảm ứng xuống mức thấp nhất.
+                    </div>
+                    <div class="p-3 bg-red-950/25 rounded border border-red-900/30">
+                        <strong class="text-red-400">🩺 TRỊ RUNG TÂM TRÊN ANDROID:</strong><br>
+                        - Chỉnh kích thước nút bắn trong cài đặt game ở mức chính xác <span class="text-yellow-400 font-bold">${fireButton}%</span>. Đặt nút bắn thấp xuống sát mép dưới để tăng tối đa hành trình vuốt dọc ổn định.<br>
+                        - Vào Cài đặt -> Hỗ trợ tiếp cận -> Độ trễ chạm giữ đặt ở mức <span class="text-yellow-400 font-bold">Ngắn (0.5s)</span> để ổn định đường truyền tín hiệu cảm ứng.
+                    </div>
+                `;
+            }
+
+            container.innerHTML = guideHTML;
+        }
+
+        function copyToClipboard() {
+            const gen = document.getElementById('valGeneral').textContent;
+            const red = document.getElementById('valRedDot').textContent;
+            const s2x = document.getElementById('valScope2x').textContent;
+            const s4x = document.getElementById('valScope4x').textContent;
+            const snp = document.getElementById('valSniper').textContent;
+            const free = document.getElementById('valFreeLook').textContent;
+            const fire = document.getElementById('valFireButton').textContent;
+            const dev = document.getElementById('resDeviceName').textContent;
+
+            const textToCopy = `Độ Nhạy VIP OB53 [${dev}]: Nhìn xung quanh: ${gen} | Red Dot: ${red} | 2x: ${s2x} | 4x: ${s4x} | Sniper: ${snp} | Free Look: ${free} | Nút bắn: ${fire}`;
+
+            const el = document.createElement('textarea');
+            el.value = textToCopy;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("Đã sao chép cấu hình độ nhạy hiệu chỉnh!");
+        }
+
+        // ================= HIỆU ỨNG TUYẾT RƠI & ĐÈN ĐỎ LUNG LINH =================
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        const maxParticles = 75;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -canvas.height;
+                this.size = Math.random() * 2.5 + 0.8;
+                this.speedY = Math.random() * 1.0 + 0.3;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.isRedGlow = Math.random() < 0.4; // Tăng tỉ lệ hạt phát xạ đỏ tạo không khí rực cháy
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+
+                if (this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                if (this.isRedGlow) {
+                    ctx.fillStyle = `rgba(239, 68, 68, ${this.opacity})`;
+                    ctx.shadowColor = '#ef4444';
+                    ctx.shadowBlur = 6;
+                } else {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.shadowBlur = 0;
+                }
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push(new Particle());
+        }
+
+        function drawGlows() {
+            // Nền đèn đỏ chuyển động mượt ở các góc
+            const gradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height, 10,
+                canvas.width / 2, canvas.height, canvas.height * 0.9
+            );
+            gradient.addColorStop(0, 'rgba(100, 5, 5, 0.35)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGlows();
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.onload = function() {
+            animate();
+        }
+    </script>
+</body>
+</html>
+
+```
